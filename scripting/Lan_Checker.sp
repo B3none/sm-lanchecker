@@ -54,21 +54,21 @@ public Action Command_LAN(int client, int arguments)
 						/*
 						else
 						{
-							PrintToChat(client, "%s, %s and %s", TAG_MESSAGE);
+							PrintToChat(client, "%s %s, %s and %s", TAG_MESSAGE);
 						}
 						*/
 						PrintToChat(client, "%s These players share the IP of %s", TAG_MESSAGE, s_IP[i]);
 						// PrintToChat(client, "%s These players share the IP of ", b_IsAdmin[client] ? "%s":"HIDDEN", TAG_MESSAGE, s_IP[i]);
+						
+						return Plugin_Handled;
 					}
-					
-					return Plugin_Handled;
 				}
 			}
 		}
 		PrintToChat(client, "%s No matches found \x02:(\x01", TAG_MESSAGE);
 		return Plugin_Handled;
 	}
-	return Plugin_Continue;
+	return Plugin_Handled;
 }
 
 public void OnClientPutInServer(int client)
@@ -86,7 +86,7 @@ public void OnMapStart()
 	s_DefaultValue = "27.27.27.27";
 	b_FLoopComplete = false;
 	
-	if(StrEqual(s_IP[0], s_DefaultValue))
+	if(StrEqual(s_IP[GetRandomInt(0, MAXPLAYERS+1)], s_DefaultValue))
 	{
 		for(int i = 1; i <= MAXPLAYERS+1; i++)
 		{
@@ -97,7 +97,7 @@ public void OnMapStart()
 	
 	for(int j = 1; j <= MAXPLAYERS+1; j++)
 	{
-		if(CheckCommandAccess(j, "oi_i_am_an_admin", ADMFLAG_GENERIC))
+		if(CheckCommandAccess(j, "sm_admin_check", ADMFLAG_GENERIC))
 		{
 			b_IsAdmin[j] = true;
 		}
