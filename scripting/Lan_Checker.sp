@@ -6,7 +6,7 @@
 char s_IP[MAXPLAYERS+1][64];
 char s_DefaultValue[64];
 bool b_FLoopComplete;
-bool b_IsAdmin[MAXPLAYERS+1];
+// bool b_IsAdmin[MAXPLAYERS+1];
 
 #define TAG_MESSAGE "[\x02IPChecker\x01]"
 
@@ -95,6 +95,7 @@ public void OnMapStart()
 		b_FLoopComplete = true;
 	}
 	
+	/*
 	for(int j = 1; j <= MAXPLAYERS+1; j++)
 	{
 		if(CheckCommandAccess(j, "sm_admin_check", ADMFLAG_GENERIC))
@@ -102,6 +103,7 @@ public void OnMapStart()
 			b_IsAdmin[j] = true;
 		}
 	}
+	*/
 }
 
 public void OnMapEnd()
@@ -112,6 +114,6 @@ public void OnMapEnd()
 	for(int i = 1; i <= MAXPLAYERS+1; i++)
 	{
 		Format(s_IP[i], sizeof(s_IP[]), s_DefaultValue);
-		b_IsAdmin[i] = false;
+		// b_IsAdmin[i] = false;
 	}
 }
