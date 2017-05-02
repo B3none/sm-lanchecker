@@ -5,7 +5,6 @@
 
 char s_IP[MAXPLAYERS+1][64];
 char s_DefaultValue[64];
-bool b_FLoopComplete;
 bool b_IsAdmin[MAXPLAYERS+1];
 
 #define TAG_MESSAGE "[\x02IPChecker\x01]"
@@ -27,36 +26,44 @@ public void OnPluginStart()
  
 public Action Command_LAN(int client, int arguments)
 {
-	if(b_FLoopComplete == true)
+	for(int i = 1; i <= MAXPLAYERS+1; i++)
 	{
-		for(int i = 1; i <= MAXPLAYERS+1; i++)
+		if(StrEqual(s_IP[i], s_DefaultValue))
 		{
-			for(int j = 1; j <= MAXPLAYERS+1; j++)
+			continue;
+		}
+		
+		for(int j = 1; j <= MAXPLAYERS+1; j++)
+		{
+			if(StrEqual(s_IP[i], s_DefaultValue))
 			{
-				if(i != j)
+				continue;
+			
+			}
+			
+			if(i != j)
+			{
+				if(StrEqual(s_IP[i], s_IP[j]))
 				{
-					if(StrEqual(s_IP[i], s_IP[j]))
+					char s_Client1[64];
+					char s_Client2[64];
+					
+					GetClientName(i, s_Client1, sizeof(s_Client2));
+					GetClientName(j, s_Client2, sizeof(s_Client2));
+					
+					PrintToChat(client, "%s IP Match found!", TAG_MESSAGE);
+					PrintToChat(client, "%s %s and %s", TAG_MESSAGE, s_Client1, s_Client2);
+					
+					if(b_IsAdmin[client])
 					{
-						char s_Client1[64];
-						char s_Client2[64];
-						
-						GetClientName(i, s_Client1, sizeof(s_Client2));
-						GetClientName(j, s_Client2, sizeof(s_Client2));
-						
-						PrintToChat(client, "%s IP Match found!", TAG_MESSAGE);
-						PrintToChat(client, "%s %s and %s", TAG_MESSAGE, s_Client1, s_Client2);
-						
-						if(b_IsAdmin[client])
-						{
-							PrintToChat(client, "%s These players share the IP of %s", TAG_MESSAGE, s_IP[i]);
-						}
-						
-						else
-						{
-							PrintToChat(client, "%s These players share the IP of (HIDDEN)", TAG_MESSAGE);
-						}
-						return Plugin_Handled;
+						PrintToChat(client, "%s These players share the IP of %s", TAG_MESSAGE, s_IP[i]);
 					}
+					
+					else
+					{
+						PrintToChat(client, "%s These players share the IP of (HIDDEN)", TAG_MESSAGE);
+					}
+					return Plugin_Handled;
 				}
 			}
 		}
@@ -80,34 +87,23 @@ public void OnClientDisconnect(int client)
 public void OnMapStart()
 {
 	s_DefaultValue = "27.27.27.27";
-	b_FLoopComplete = false;
-	
-	if(StrEqual(s_IP[GetRandomInt(0, MAXPLAYERS+1)], s_DefaultValue))
-	{
-		for(int i = 1; i <= MAXPLAYERS+1; i++)
-		{
-			GetClientIP(i, s_IP[i], sizeof(s_IP), true);
-		}
-		b_FLoopComplete = true;
-	}
-	
-	for(int j = 1; j <= MAXPLAYERS+1; j++)
-	{
-		if(CheckCommandAccess(j, "sm_admin_check", ADMFLAG_GENERIC))
-		{
-			b_IsAdmin[j] = true;
-		}
-	}
-}
-
-public void OnMapEnd()
-{
-	s_DefaultValue = "27.27.27.27";
-	b_FLoopComplete = false;
 	
 	for(int i = 1; i <= MAXPLAYERS+1; i++)
 	{
 		Format(s_IP[i], sizeof(s_IP), s_DefaultValue);
 		b_IsAdmin[i] = false;
+	}
+	
+	for(int j = 1; j <= MAXPLAYERS+1; j++)
+	{
+		GetClientIP(j, s_IP[j], sizeof(s_IP), true);
+	}
+	
+	for(int l = 1; l <= MAXPLAYERS+1; l++)
+	{
+		if(CheckCommandAccess(l, "sm_admin_check", ADMFLAG_GENERIC))
+		{
+			b_IsAdmin[l] = true;
+		}
 	}
 }
