@@ -44,22 +44,17 @@ public Action Command_LAN(int client, int arguments)
 						GetClientName(j, s_Client2, sizeof(s_Client2));
 						
 						PrintToChat(client, "%s IP Match found!", TAG_MESSAGE);
-						/*
-						if(s_IP[i] == 2)
-						{
-						*/
 						PrintToChat(client, "%s %s and %s", TAG_MESSAGE, s_Client1, s_Client2);
-						//}
 						
-						/*
+						if(b_IsAdmin[client])
+						{
+							PrintToChat(client, "%s These players share the IP of %s", TAG_MESSAGE, s_IP[i]);
+						}
+						
 						else
 						{
-							PrintToChat(client, "%s %s, %s and %s", TAG_MESSAGE);
+							PrintToChat(client, "%s These players share the IP of (HIDDEN)", TAG_MESSAGE);
 						}
-						*/
-						PrintToChat(client, "%s These players share the IP of %s", TAG_MESSAGE, s_IP[i]);
-						// PrintToChat(client, "%s These players share the IP of ", b_IsAdmin[client] ? "%s":"HIDDEN", TAG_MESSAGE, s_IP[i]);
-						
 						return Plugin_Handled;
 					}
 				}
@@ -73,12 +68,13 @@ public Action Command_LAN(int client, int arguments)
 
 public void OnClientPutInServer(int client)
 {
-	GetClientIP(client, s_IP[client], sizeof(s_IP[][]), true);
+	GetClientIP(client, s_IP[client], sizeof(s_IP), true);
 }
 
 public void OnClientDisconnect(int client)
 {
-	Format(s_IP[client], sizeof(s_IP[]), s_DefaultValue);
+
+	Format(s_IP[client], sizeof(s_IP), s_DefaultValue);
 }
 
 public void OnMapStart()
@@ -90,7 +86,7 @@ public void OnMapStart()
 	{
 		for(int i = 1; i <= MAXPLAYERS+1; i++)
 		{
-			GetClientIP(i, s_IP[i], sizeof(s_IP[][]), true);
+			GetClientIP(i, s_IP[i], sizeof(s_IP), true);
 		}
 		b_FLoopComplete = true;
 	}
@@ -111,7 +107,7 @@ public void OnMapEnd()
 	
 	for(int i = 1; i <= MAXPLAYERS+1; i++)
 	{
-		Format(s_IP[i], sizeof(s_IP[]), s_DefaultValue);
+		Format(s_IP[i], sizeof(s_IP), s_DefaultValue);
 		b_IsAdmin[i] = false;
 	}
 }
